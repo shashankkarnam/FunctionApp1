@@ -16,61 +16,55 @@ namespace Adapter
     {
         public string HGVName { get; set; }
         public string Country { get; set; }
-  
+
     }
 
-  
+
     public class Service : IService
     {
         private static readonly string DatabaseId = "HGV";
         private static readonly string CollectionId = "HGVData";
         //private static DocumentClient client;
-        private  IDocumentClient _client;
+        private IDocumentClient _client;
         public Service(IDocumentClient client)
         {
             _client = client;
         }
-        public async  Task<HGV> method(string id)
+        public async Task<HGV> method(string id)
         {
 
-           _client = new DocumentClient(new Uri("https://hgv.documents.azure.com:443/"), "RouLXrjhON6SpUwn9ML2lm67CTULIpi0axOYcd6aP7ga3s69LGJtlQaQxVOcaY9Y6QOijF9jlQHSuPc7g56Wgw==");
-            
-            var volcano = new HGV
+            try
             {
-                HGVName = "TestHGV",
-                Country = "United States",
-                
-            };
-            
-            var ans=await  _client.CreateDatabaseIfNotExistsAsync(new Database { Id =DatabaseId });
+                _client = new DocumentClient(new Uri("https://hgv.documents.azure.com:443/"), "RouLXrjhON6SpUwn9ML2lm67CTULIpi0axOYcd6aP7ga3s69LGJtlQaQxVOcaY9Y6QOijF9jlQHSuPc7g56Wgw==");
+               //Inserting to cosmos
+                var record = new HGV
+                {
+                    HGVName = "TestHGV",
+                    Country = "United States",
 
-            var collectionDefinition = new DocumentCollection { Id = CollectionId };
-            _client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId), collectionDefinition).Wait();
-         
-            var document = await _client.CreateDocumentAsync(
-                                 UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId)
-                                 , volcano);
-           
-            HGV rainierVolcano =  _client.CreateDocumentQuery<HGV>(
-                           UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-                           .Where(v => v.HGVName == "TestHGV" )
-                           .AsEnumerable()
-                           .FirstOrDefault();
-            var document0 = _client
-    .CreateDocumentQuery(
-        UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-    ;
-            HGV document1 = _client
-    .ReadDocumentAsync<HGV>(
-        UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id))
-    .Result;
-            //HGV rainierVolcano1 = _client.CreateDocumentQuery<HGV>(
-            //               UriFactory.CreateDocumentUri(DatabaseId, CollectionId,id))
-            //               .AsEnumerable()
-            //               .Where()
-            //               .FirstOrDefault();
+                };
+                var ans = await _client.CreateDatabaseIfNotExistsAsync(new Database { Id = DatabaseId });
+                var collectionDefinition = new DocumentCollection { Id = CollectionId };
+                _client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId), collectionDefinition).Wait();
 
-            return document1;
+                var document = await _client.CreateDocumentAsync(
+                                     UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId)
+                                     , record);
+
+                HGV hgvrecord = _client.CreateDocumentQuery<HGV>(
+                               UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
+                               .Where(v => v.HGVName == "TestHGV")
+                               .AsEnumerable()
+                               .FirstOrDefault();
+
+                //Getting data from cosmos based on id
+                HGV document1 = _client.ReadDocumentAsync<HGV>(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id)).Result;
+                return document1;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
 
         }
