@@ -35,7 +35,7 @@ namespace FunctionApp1
             string name = req.Query["name"];
             string id = req.Query["id"];
             Adapter.HGV result = _service.test(id);
-            log.LogInformation(" test---{0}", id);
+            log.LogInformation(" Id from query paramater--->{0}", id);
             HttpResponseMessage request = new HttpResponseMessage();
            
             if(result!=null)
