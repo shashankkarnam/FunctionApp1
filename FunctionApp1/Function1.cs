@@ -11,7 +11,7 @@ using BusinessLayer;
 using Adapter;
 using System.Net.Http;
 using System.Net;
-
+using System.Configuration;
 
 namespace FunctionApp1
 {
@@ -27,7 +27,7 @@ namespace FunctionApp1
 
 
         [FunctionName("HGVTestFunction")]
-        public async Task<IActionResult> Run(
+        public  async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -39,7 +39,7 @@ namespace FunctionApp1
                 string id = req.Query["id"];
 
                 //call to method  in BusinessLayer
-                HGV result = _service.test(id);
+                var result = await _service.test(id);
                 log.LogInformation(" Id from query paramater--->{0}", id);
 
                 if (result != null)

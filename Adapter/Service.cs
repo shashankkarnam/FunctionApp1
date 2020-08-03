@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Documents;
+﻿using DomainLayer;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System;
@@ -35,7 +36,9 @@ namespace Adapter
 
             try
             {
-                _client = new DocumentClient(new Uri("https://hgv.documents.azure.com:443/"), "RouLXrjhON6SpUwn9ML2lm67CTULIpi0axOYcd6aP7ga3s69LGJtlQaQxVOcaY9Y6QOijF9jlQHSuPc7g56Wgw==");
+                var PrimaryKey = Constants.PrimaryKey;
+                var url = Constants.Uri;
+                _client = new DocumentClient(new Uri(url), PrimaryKey);
                //Inserting to cosmos
                 var record = new HGV
                 {

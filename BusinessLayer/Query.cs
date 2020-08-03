@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinessLayer
 {
@@ -15,9 +16,9 @@ namespace BusinessLayer
         {
             _service = service;
         }
-        public HGV test(string id)
+        public async Task<HGV> test(string id)
         {
-            return _service.method(id).GetAwaiter().GetResult();
+            return  await _service.method(id);
         }
     }
 }

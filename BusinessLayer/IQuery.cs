@@ -1,10 +1,11 @@
 ﻿using Adapter;
 using System;
+using System.Threading.Tasks;
 
 namespace BusinessLayer
 {
     public interface IQuery
     {
-        HGV test(string id);
+        Task<HGV> test(string id);
     }
 }
